@@ -1,21 +1,17 @@
 const express = require("express");
-const { loginUser, signupUser } = require("../controllers/AuthController");
+const { loginUser, signupUser, logoutUser, verifyToken } = require("../controllers/AuthController");
+const { userAuth } = require("../middlewares/Auth");
+const upload = require("../configs/multer");
 const AuthRoutes = express.Router();
 
 AuthRoutes.post("/login", loginUser);
 
-AuthRoutes.post("/signup", signupUser, async (req, res) => {
-  const { token } = req.body;
-  // console.log(token);
-  res.send("token");
-});
-AuthRoutes.post("/logout", async (req, res) => {
-  try {
-    res.send("Logout");
-  } catch (error) {
-    console.log("Error: ", error.message);
-  }
-});
+AuthRoutes.post("/signup", upload.array("photos", 5), signupUser);
+
+AuthRoutes.post("/logout", logoutUser);
+
+AuthRoutes.get("/verify-token", userAuth, verifyToken);
+
 AuthRoutes.put("/forget", async (req, res) => {
   try {
     res.send("forget password");

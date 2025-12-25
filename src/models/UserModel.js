@@ -1,5 +1,6 @@
 const { Schema, default: mongoose } = require("mongoose");
 const jwt = require("jsonwebtoken");
+
 const UserSchema = new Schema(
   {
     name: {
@@ -26,10 +27,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-
     bio: {
       type: String,
-      required: true,
+      // required: true,
       max: 50,
     },
     interests: {
@@ -37,7 +37,11 @@ const UserSchema = new Schema(
     },
     profileURL: {
       type: String,
-      required: true,
+      // required: true,
+    },
+    profileImages: {
+      type: [String],
+      default: [],
     },
   },
   {
@@ -45,8 +49,17 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.methods.signJWT = function (req, res) {
+// Method to sign JWT
+UserSchema.methods.signJWT = function () {
   const token = jwt.sign({ _id: this._id }, "000767");
   return token;
 };
+
+// Method to convert user to JSON without password
+UserSchema.methods.toJSON = function () {
+  const userObject = this?.toObject();
+  delete userObject?.password;
+  return userObject;
+};
+
 module.exports = mongoose.model("UserModel", UserSchema);
