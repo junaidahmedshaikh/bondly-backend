@@ -21,14 +21,14 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "*",
     credentials: true,
     methods: ["GET", "POST"],
   },
 });
 // Routes
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "*", credentials: true }));
 app.use(cookieParser());
 
 // Serve static files for uploads
