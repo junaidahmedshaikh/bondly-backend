@@ -28,7 +28,7 @@ const io = new Server(httpServer, {
 });
 // Routes
 app.use(express.json());
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "https://bondly1.netlify.app/", credentials: true }));
 app.use(cookieParser());
 
 // Serve static files for uploads
