@@ -19,16 +19,47 @@ const { Server } = require("socket.io");
 
 const httpServer = createServer(app);
 
+// CORS Configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://bondly1.netlify.app",
+  process.env.CORS_ORIGIN,
+].filter(Boolean);
+
+// CORS origin check function (reusable for both Express and Socket.io)
+const corsOriginCheck = function (origin, callback) {
+  // Allow requests with no origin (like mobile apps or curl requests)
+  if (!origin) return callback(null, true);
+
+  if (
+    allowedOrigins.indexOf(origin) !== -1 ||
+    process.env.NODE_ENV !== "production"
+  ) {
+    callback(null, true);
+  } else {
+    callback(new Error("Not allowed by CORS"));
+  }
+};
+
+const corsOptions = {
+  origin: corsOriginCheck,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin: corsOriginCheck,
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   },
 });
+
 // Routes
 app.use(express.json());
-app.use(cors({ origin: "https://bondly1.netlify.app/", credentials: true }));
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 // Serve static files for uploads
