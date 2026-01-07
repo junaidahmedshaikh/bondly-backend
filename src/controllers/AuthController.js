@@ -30,8 +30,8 @@ const loginUser = async (req, res) => {
     // Set token as HTTP-only cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 
@@ -92,6 +92,16 @@ const signupUser = async (req, res, next) => {
     });
 
     await user.save();
+
+    const token = await user.signJWT();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    });
+
     res.status(201).json({ message: "User added successfully!", user });
     // next();
   } catch (error) {

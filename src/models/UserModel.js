@@ -51,7 +51,7 @@ const UserSchema = new Schema(
 
 // Method to sign JWT
 UserSchema.methods.signJWT = function () {
-  const token = jwt.sign({ _id: this._id }, "000767");
+  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET || "000767");
   return token;
 };
 

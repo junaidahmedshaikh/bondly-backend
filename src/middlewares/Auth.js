@@ -11,7 +11,7 @@ const userAuth = async (req, res, next) => {
         .json({ message: "Access denied. No token provided." });
     }
 
-    const encryptedClient = await jwt.verify(token, "000767");
+    const encryptedClient = await jwt.verify(token, process.env.JWT_SECRET || "000767");
     const { _id } = encryptedClient;
 
     const user = await UserModel.findById({ _id });
